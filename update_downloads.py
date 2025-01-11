@@ -49,13 +49,19 @@ def get_curseforge_downloads(project_id: int) -> int:
     using the modern v1 API (https://api.curseforge.com).
     """
     headers = {
-        "X-Api-Token": CF_API_TOKEN
+        "X-Api-Token": CF_API_TOKEN,
+        "Accept": "application/json"
     }
     url = f"{CURSEFORGE_API_BASE}{project_id}"
+    print(f"Fetching CurseForge downloads from: {url}")  # Debug logging
     resp = requests.get(url, headers=headers)
+    # If you want to see more details on failure, uncomment:
+    print("Response status:", resp.status_code)
+    print("Response body:", resp.text)
     resp.raise_for_status()
-    data = resp.json()  # { "data": { "id": X, "downloadCount": 42, ... } }
+    data = resp.json()  # Expected structure: { "data": { "id": X, "downloadCount": 42, ... } }
     return int(data["data"]["downloadCount"])
+
 
 ###############################################################################
 # Main - Update README
