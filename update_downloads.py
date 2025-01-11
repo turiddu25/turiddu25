@@ -25,7 +25,7 @@ CF_SDEXREWARDS_ID = 1174859   # <-- Replace with the actual ID
 # API Endpoints
 ###############################################################################
 
-MODRINTH_API_BASE = "https://api.modrinth.com/v1/mod/"
+MODRINTH_API_BASE = "https://api.modrinth.com/v2/project/"
 CURSEFORGE_API_BASE = "https://api.curseforge.com/v1/mods/"
 
 ###############################################################################
