@@ -11,7 +11,10 @@ import json
 
 # CurseForge token will be read from an environment variable "CF_API_TOKEN"
 # (You will store this token as a GitHub Secret)
-CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "")
+CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
+if not CF_API_TOKEN:
+    raise ValueError("CF_API_TOKEN is not set or is empty.")
+
 
 # For Modrinth, set your actual project slugs
 MODRINTH_COBBLEPASS_SLUG = "cobble-pass"  # e.g. "cobble-pass"
