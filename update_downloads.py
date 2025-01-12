@@ -41,7 +41,7 @@ def get_modrinth_downloads(slug: str) -> int:
     # The v2 API returns a "downloads" field
     return data.get("downloads", 0)
 
- def get_curseforge_downloads(project_id: int) -> int:
+def get_curseforge_downloads(project_id: int) -> int:
      """
 #     Fetch total downloads from CurseForge by numeric project ID
 #     using the modern v1 API.
