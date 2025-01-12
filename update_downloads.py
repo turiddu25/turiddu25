@@ -42,22 +42,22 @@ def get_modrinth_downloads(slug: str) -> int:
     return data.get("downloads", 0)
 
 def get_curseforge_downloads(project_id: int) -> int:
-     """
-#     Fetch total downloads from CurseForge by numeric project ID
-#     using the modern v1 API.
-     """
-     headers = {
-         "X-Api-Token": CF_API_TOKEN,
-         "Accept": "application/json"
-     }
-     url = f"{CURSEFORGE_API_BASE}{project_id}"
-     print(f"Fetching CurseForge downloads from: {url}")
-     resp = requests.get(url, headers=headers)
-     print("Response status:", resp.status_code)
-     print("Response body:", resp.text)
-     resp.raise_for_status()  # This will raise an HTTPError if the status is 4xx/5xx
-     data = resp.json()  # Expected structure: { "data": { "id": ..., "downloadCount": ..., ... } }
-     return int(data["data"]["downloadCount"])
+    """
+    Fetch total downloads from CurseForge by numeric project ID
+    using the modern v1 API.
+    """
+    headers = {
+        "X-Api-Token": CF_API_TOKEN,
+        "Accept": "application/json"
+    }
+    url = f"{CURSEFORGE_API_BASE}{project_id}"
+    print(f"Fetching CurseForge downloads from: {url}")
+    resp = requests.get(url, headers=headers)
+    print("Response status:", resp.status_code)
+    print("Response body:", resp.text)
+    resp.raise_for_status()  # This will raise an HTTPError if the status is 4xx/5xx
+    data = resp.json()  # Expected structure: { "data": { "id": ..., "downloadCount": ..., ... } }
+    return int(data["data"]["downloadCount"])
 
 ###############################################################################
 # Main - Update README
