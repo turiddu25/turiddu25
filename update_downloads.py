@@ -18,7 +18,7 @@ MODRINTH_SDEXREWARDS_SLUG = "cobblemon-simpledexrewards"
 ###############################################################################
 
 MODRINTH_API_BASE = "https://api.modrinth.com/v2/project/"
-# CURSEFORGE_API_BASE = "https://api.curseforge.com/v1/mods/"
+CURSEFORGE_API_BASE = "https://api.curseforge.com/v1/mods/"
 
 ###############################################################################
 # Fetch Functions
@@ -34,23 +34,23 @@ def get_modrinth_downloads(slug: str) -> int:
     # The v2 API returns a "downloads" field
     return data.get("downloads", 0)
 
-# def get_curseforge_downloads(project_id: int) -> int:
-#     """
+ def get_curseforge_downloads(project_id: int) -> int:
+     """
 #     Fetch total downloads from CurseForge by numeric project ID
 #     using the modern v1 API.
-#     """
-#     headers = {
-#         "X-Api-Token": CF_API_TOKEN,
-#         "Accept": "application/json"
-#     }
-#     url = f"{CURSEFORGE_API_BASE}{project_id}"
-#     print(f"Fetching CurseForge downloads from: {url}")
-#     resp = requests.get(url, headers=headers)
-#     print("Response status:", resp.status_code)
-#     print("Response body:", resp.text)
-#     resp.raise_for_status()  # This will raise an HTTPError if the status is 4xx/5xx
-#     data = resp.json()  # Expected structure: { "data": { "id": ..., "downloadCount": ..., ... } }
-#     return int(data["data"]["downloadCount"])
+     """
+     headers = {
+         "X-Api-Token": CF_API_TOKEN,
+         "Accept": "application/json"
+     }
+     url = f"{CURSEFORGE_API_BASE}{project_id}"
+     print(f"Fetching CurseForge downloads from: {url}")
+     resp = requests.get(url, headers=headers)
+     print("Response status:", resp.status_code)
+     print("Response body:", resp.text)
+     resp.raise_for_status()  # This will raise an HTTPError if the status is 4xx/5xx
+     data = resp.json()  # Expected structure: { "data": { "id": ..., "downloadCount": ..., ... } }
+     return int(data["data"]["downloadCount"])
 
 ###############################################################################
 # Main - Update README
@@ -65,13 +65,14 @@ def update_readme():
     
     # 2) Get combined download counts for each mod
     # CobblePass
-    cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG)
-    cobblepass_total = cobblepass_modrinth_downloads  # No CurseForge part
+    cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG) 
+    cobblepass_cf_downloads = get_curseforge_downloads(CF_COBBLEPASS_ID)
+    cobblepass_total = cobblepass_modrinth_downloads + cobblepass_cf_downloads
 
     # SimpleDexRewards
     sdex_modrinth_downloads = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG)
-    sdex_total = sdex_modrinth_downloads  # No CurseForge part
-
+    sdex_cf_downloads = get_curseforge_downloads(CF_SDEXREWARDS_ID)
+    sdex_total = sdex_modrinth_downloads + sdex_cf_downloads
     # 3) Replace the placeholders in the README with the updated numbers
     content = re.sub(
         r"(<!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)",
