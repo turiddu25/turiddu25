@@ -8,10 +8,17 @@ import json
 ###############################################################################
 # Configuration - FILL THESE IN!
 ###############################################################################
+CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
 
 # For Modrinth, set your actual project slugs (from the URL)
 MODRINTH_COBBLEPASS_SLUG = "cobble-pass"  # e.g., from https://modrinth.com/mod/cobble-pass
 MODRINTH_SDEXREWARDS_SLUG = "cobblemon-simpledexrewards"
+
+
+# For CurseForge, set your numeric project IDs (verify these are the correct IDs from your project's management page)
+CF_COBBLEPASS_ID = 1176631    # Replace with the actual numeric ID for CobblePass
+CF_SDEXREWARDS_ID = 1174859   # Replace with the actual numeric ID for SimpleDexRewards
+
 
 ###############################################################################
 # API Endpoints
@@ -57,7 +64,7 @@ def get_modrinth_downloads(slug: str) -> int:
 ###############################################################################
 
 def update_readme():
-    """Fetch downloads from Modrinth and update README placeholders."""
+    """Fetch downloads from both sources, combine them, and update README placeholders."""
     
     # 1) Read the current README file
     with open("README.md", "r", encoding="utf-8") as f:
@@ -65,14 +72,15 @@ def update_readme():
     
     # 2) Get combined download counts for each mod
     # CobblePass
-    cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG) 
+    cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG)
     cobblepass_cf_downloads = get_curseforge_downloads(CF_COBBLEPASS_ID)
     cobblepass_total = cobblepass_modrinth_downloads + cobblepass_cf_downloads
-
+    
     # SimpleDexRewards
     sdex_modrinth_downloads = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG)
     sdex_cf_downloads = get_curseforge_downloads(CF_SDEXREWARDS_ID)
     sdex_total = sdex_modrinth_downloads + sdex_cf_downloads
+    
     # 3) Replace the placeholders in the README with the updated numbers
     content = re.sub(
         r"(<!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)",
