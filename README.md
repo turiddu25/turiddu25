@@ -1,6 +1,6 @@
 # 💫 About Me:
 Hi, I'm Colin!<br>I'm a CS student at the University of Glasgow and a passionate developer from Italy<br>🔭 I’m currently working on:<br>Colin-TTS : A live AI clone of myself<br>CobblePass : A minecraft Battle Pass mod<br>
-- **CobblePass** total downloads:  
+- [**CobblePass**](https://github.com/turiddu25/CobblePass) total downloads:  
   <!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->
 647
 <!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->
