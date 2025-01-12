@@ -39,7 +39,7 @@ def scrape_curseforge_downloads(slug: str) -> int:
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         # Find the element containing the download count
-        download_element = soup.find("span", class_="stats-stat").find("span", string="Downloads").parent.find("span", class_="stats-text")
+        download_element = soup.find("li", class_="detail-downloads").find("span")
         return int(download_element.text.replace(",", "").strip())
     except Exception as e:
         print(f"Failed to scrape CurseForge downloads for {slug}: {e}")
