@@ -69,13 +69,13 @@ def update_readme():
     # 3) Replace the placeholders in the README with the updated numbers
     content = re.sub(
         r"(<!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)",
-        f"\\1\n    {cobblepass_total}\n\\3",
+        f"\\1\n      {cobblepass_total}\n    \\3",
         content,
         flags=re.DOTALL,
     )
     content = re.sub(
         r"(<!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)",
-        f"\\1\n    {sdex_total}\n\\3",
+        f"\\1\n      {sdex_total}\n    \\3",
         content,
         flags=re.DOTALL,
     )
