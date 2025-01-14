@@ -73,11 +73,11 @@ def update_readme():
             content,
             flags=re.DOTALL,
         )
-        content = re.sub(
-            r"(<!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)",
-            f"\\1\n\n{sdex_total}\n\\3",
-            content,
-            flags=re.DOTALL,
+    content = re.sub(
+        r"(<!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)",
+        f"\\1\n\n{sdex_total}\n\\3",
+        content,
+        flags=re.DOTALL,
         )
 
     # 4) Write the updated content back to the README
