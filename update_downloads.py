@@ -43,7 +43,7 @@ def scrape_curseforge_downloads(slug: str) -> int:
         return int(download_element.text.replace(",", "").strip())
     except Exception as e:
         print(f"Failed to scrape CurseForge downloads for {slug}: {e}")
-        return -1
+        return 0
 
 ###############################################################################
 # Main - Update README
@@ -67,18 +67,18 @@ def update_readme():
     sdex_total = sdex_modrinth_downloads + sdex_cf_downloads
 
     # 3) Replace the placeholders in the README with the updated numbers
-        content = re.sub(
-            r"(<!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)",
-            f"\\1\n    {cobblepass_total}\n\\3",
-            content,
-            flags=re.DOTALL,
-        )
-        content = re.sub(
-            r"(<!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)",
-            f"\\1\n    {sdex_total}\n\\3",
-            content,
-            flags=re.DOTALL,
-        )
+    content = re.sub(
+        r"(<!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->)",
+        f"\\1\n    {cobblepass_total}\n\\3",
+        content,
+        flags=re.DOTALL,
+    )
+    content = re.sub(
+        r"(<!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)(.*?)(<!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->)",
+        f"\\1\n    {sdex_total}\n\\3",
+        content,
+        flags=re.DOTALL,
+    )
 
     # 4) Write the updated content back to the README
     with open("README.md", "w", encoding="utf-8") as f:
