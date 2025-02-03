@@ -3,7 +3,7 @@ Hi, I'm **Colin**!
 I'm a **CS student** at the **University of Glasgow** and a passionate developer from **Italy**.  
 
 ## 🔭 Current Projects:
-- 🌟 **[Colin-AI](https://github.com/turiddu25/Colin-AI)**: A live AI clone of myself.  
+- 🌟 **[Colin-AI](https://github.com/turiddu25/Colin-AI)**: A live AI clone of myself optimised for CPU-only inference, check it out at: https://nardocol.in/ !  
 - 🎮 **Minecraft Side Mods**:  
   - [**CobblePass**](https://github.com/turiddu25/CobblePass): A Battle Pass mod for Cobblemon.  
     **Total Downloads**:  
