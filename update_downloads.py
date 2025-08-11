@@ -75,21 +75,21 @@ def update_readme():
     cobblepass_total = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG) + scrape_curseforge_downloads(CF_COBBLEPASS_SLUG)
     sdex_total = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG) + scrape_curseforge_downloads(CF_SDEXREWARDS_SLUG)
 
-    # This function creates the new content to place between the comment tags.
-    # It preserves the exact spacing and newlines from your README.
-    def create_replacement_content(total_downloads):
-        return f"\n\n\n      {total_downloads:,}\n\n    "
+    # --- START: CORRECTED CODE ---
+    # This helper function replaces the content between the placeholder tags.
+    def get_updated_content(existing_content, placeholder_name, total_downloads):
+        # Using an f-string to build the pattern on a single line avoids indentation errors.
+        # This safer regex uses a negative lookahead `(?!)((?:(?!)"
+        pattern = re.compile(pattern_string, re.IGNORECASE)
 
-    # A much safer regex using a negative lookahead `(?!)"  # Group 1: Start comment
-            r"((?:(?!)",  # Group 3: End comment
-            re.IGNORECASE
-        )
+        # The new content to insert, matching your README's formatting.
+        new_inner_content = f"\n\n\n      {total_downloads:,}\n\n    "
         
-        # We replace the middle group (group 2) with our new content,
-        # and we put back group 1 and group 3.
-        replacement_string = f"\\1{create_replacement_content(total_downloads)}\\3"
+        # We replace the middle part (group 2) and put back the comment tags (groups 1 and 3).
+        replacement_string = f"\\1{new_inner_content}\\3"
         
         return pattern.sub(replacement_string, existing_content)
+    # --- END: CORRECTED CODE ---
 
     content = get_updated_content(content, "COBBLEPASS_DOWNLOADS_PLACEHOLDER", cobblepass_total)
     content = get_updated_content(content, "SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER", sdex_total)
