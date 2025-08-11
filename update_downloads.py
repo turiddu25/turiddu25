@@ -25,10 +25,14 @@ def get_modrinth_downloads(slug: str) -> int:
     """Fetch total downloads from Modrinth by project slug."""
     url = f"https://api.modrinth.com/v2/project/{slug}"
     print(f"Fetching Modrinth downloads from: {url}")
-    resp = requests.get(url)
-    resp.raise_for_status()
-    data = resp.json()
-    return data.get("downloads", 0)
+    try:
+        resp = requests.get(url)
+        resp.raise_for_status()
+        data = resp.json()
+        return data.get("downloads", 0)
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch Modrinth downloads for {slug}: {e}")
+        return 0
 
 def scrape_curseforge_downloads(slug: str) -> int:
     """Scrape total downloads from CurseForge by project slug."""
@@ -50,7 +54,6 @@ def scrape_curseforge_downloads(slug: str) -> int:
         
         print(f"Could not find download count for {slug}.")
         return 0
-
     except Exception as e:
         print(f"Failed to scrape CurseForge downloads for {slug}: {e}")
         return 0
@@ -61,7 +64,6 @@ def scrape_curseforge_downloads(slug: str) -> int:
 
 def update_readme():
     """Fetch downloads from both sources, combine them, and update README placeholders."""
-    # 1) Read the current README file
     try:
         with open("README.md", "r", encoding="utf-8") as f:
             content = f.read()
@@ -69,34 +71,35 @@ def update_readme():
         print("Error: README.md not found. Please ensure the script is in the correct directory.")
         return
 
-    # 2) Get combined download counts for each mod
-    cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG)
-    cobblepass_cf_downloads = scrape_curseforge_downloads(CF_COBBLEPASS_SLUG)
-    cobblepass_total = cobblepass_modrinth_downloads + cobblepass_cf_downloads
+    # Get combined download counts
+    cobblepass_total = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG) + scrape_curseforge_downloads(CF_COBBLEPASS_SLUG)
+    sdex_total = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG) + scrape_curseforge_downloads(CF_SDEXREWARDS_SLUG)
 
-    sdex_modrinth_downloads = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG)
-    sdex_cf_downloads = scrape_curseforge_downloads(CF_SDEXREWARDS_SLUG)
-    sdex_total = sdex_modrinth_downloads + sdex_cf_downloads
+    # This function creates the new content to place between the comment tags.
+    # It preserves the exact spacing and newlines from your README.
+    def create_replacement_content(total_downloads):
+        return f"\n\n\n      {total_downloads:,}\n\n    "
 
-    # --- START: CORRECTED CODE ---
-    # This safer regex pattern prevents matching across other HTML comments,
-    # avoiding the file corruption issue.
-    # It looks for the start comment, then matches any character (`[\s\S]`)
-    # as long as it's not the beginning of another comment (`(?!)[\s\S]*?()"
-    sdex_pattern = r"()[\s\S]*?()"
+    # A much safer regex using a negative lookahead `(?!)"  # Group 1: Start comment
+            r"((?:(?!)",  # Group 3: End comment
+            re.IGNORECASE
+        )
+        
+        # We replace the middle group (group 2) with our new content,
+        # and we put back group 1 and group 3.
+        replacement_string = f"\\1{create_replacement_content(total_downloads)}\\3"
+        
+        return pattern.sub(replacement_string, existing_content)
 
-    content = re.sub(cobblepass_pattern, create_replacement_string(cobblepass_total), content)
-    content = re.sub(sdex_pattern, create_replacement_string(sdex_total), content)
-    # --- END: CORRECTED CODE ---
-
-    # 4) Write the updated content back to the README
+    content = get_updated_content(content, "COBBLEPASS_DOWNLOADS_PLACEHOLDER", cobblepass_total)
+    content = get_updated_content(content, "SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER", sdex_total)
+    
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(content)
 
     print("\nREADME update complete!")
     print(f"CobblePass Total Downloads: {cobblepass_total:,}")
     print(f"SimpleDexRewards Total Downloads: {sdex_total:,}")
-
 
 if __name__ == "__main__":
     update_readme()
