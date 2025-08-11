@@ -35,7 +35,6 @@ def scrape_curseforge_downloads(slug: str) -> int:
     url = f"https://www.curseforge.com/minecraft/mc-mods/{slug}"
     print(f"Scraping CurseForge downloads from: {url}")
     try:
-        # Set a User-Agent header to mimic a browser request
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
@@ -43,19 +42,13 @@ def scrape_curseforge_downloads(slug: str) -> int:
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         
-        # --- START: CORRECTED CODE ---
-        # The old selector `soup.find("li", class_="detail-downloads")` is outdated.
-        # New logic: Find the <dt> tag that contains the text "Downloads" and then
-        # get the text from the next sibling <dd> tag.
         downloads_dt = soup.find('dt', string=lambda text: text and 'Downloads' in text)
         if downloads_dt:
             download_dd = downloads_dt.find_next_sibling('dd')
             if download_dd:
                 return int(download_dd.text.replace(",", "").strip())
-        # --- END: CORRECTED CODE ---
         
-        # If the new logic fails for any reason, return 0
-        print(f"Could not find download count for {slug} using the new method.")
+        print(f"Could not find download count for {slug}.")
         return 0
 
     except Exception as e:
@@ -69,33 +62,32 @@ def scrape_curseforge_downloads(slug: str) -> int:
 def update_readme():
     """Fetch downloads from both sources, combine them, and update README placeholders."""
     # 1) Read the current README file
-    with open("README.md", "r", encoding="utf-8") as f:
-        content = f.read()
+    try:
+        with open("README.md", "r", encoding="utf-8") as f:
+            content = f.read()
+    except FileNotFoundError:
+        print("Error: README.md not found. Please ensure the script is in the correct directory.")
+        return
 
     # 2) Get combined download counts for each mod
-    # CobblePass
     cobblepass_modrinth_downloads = get_modrinth_downloads(MODRINTH_COBBLEPASS_SLUG)
     cobblepass_cf_downloads = scrape_curseforge_downloads(CF_COBBLEPASS_SLUG)
     cobblepass_total = cobblepass_modrinth_downloads + cobblepass_cf_downloads
 
-    # SimpleDexRewards
     sdex_modrinth_downloads = get_modrinth_downloads(MODRINTH_SDEXREWARDS_SLUG)
     sdex_cf_downloads = scrape_curseforge_downloads(CF_SDEXREWARDS_SLUG)
     sdex_total = sdex_modrinth_downloads + sdex_cf_downloads
 
-    # 3) Replace the placeholders in the README with the updated numbers
-    content = re.sub(
-        r"()(.*?)()",
-        f"\\1\n      {cobblepass_total:,}\n    \\3",  # Added comma formatting
-        content,
-        flags=re.DOTALL,
-    )
-    content = re.sub(
-        r"()(.*?)()",
-        f"\\1\n      {sdex_total:,}\n    \\3",  # Added comma formatting
-        content,
-        flags=re.DOTALL,
-    )
+    # --- START: CORRECTED CODE ---
+    # This safer regex pattern prevents matching across other HTML comments,
+    # avoiding the file corruption issue.
+    # It looks for the start comment, then matches any character (`[\s\S]`)
+    # as long as it's not the beginning of another comment (`(?!)[\s\S]*?()"
+    sdex_pattern = r"()[\s\S]*?()"
+
+    content = re.sub(cobblepass_pattern, create_replacement_string(cobblepass_total), content)
+    content = re.sub(sdex_pattern, create_replacement_string(sdex_total), content)
+    # --- END: CORRECTED CODE ---
 
     # 4) Write the updated content back to the README
     with open("README.md", "w", encoding="utf-8") as f:
@@ -104,6 +96,7 @@ def update_readme():
     print("\nREADME update complete!")
     print(f"CobblePass Total Downloads: {cobblepass_total:,}")
     print(f"SimpleDexRewards Total Downloads: {sdex_total:,}")
+
 
 if __name__ == "__main__":
     update_readme()
