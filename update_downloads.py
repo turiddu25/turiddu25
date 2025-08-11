@@ -78,17 +78,18 @@ def update_readme():
     # --- START: CORRECTED CODE ---
     # This helper function replaces the content between the placeholder tags.
     def get_updated_content(existing_content, placeholder_name, total_downloads):
-        # Using an f-string to build the pattern on a single line avoids indentation errors.
-        # This safer regex uses a negative lookahead `(?!)((?:(?!)"
-        pattern = re.compile(pattern_string, re.IGNORECASE)
+    # Create the regex pattern based on the placeholder name
+        pattern_string = (
+            rf"(<!-- {placeholder_name} -->)(.*?)(<!-- /{placeholder_name} -->)"
+            )
 
-        # The new content to insert, matching your README's formatting.
-        new_inner_content = f"\n\n\n      {total_downloads:,}\n\n    "
-        
-        # We replace the middle part (group 2) and put back the comment tags (groups 1 and 3).
+        pattern = re.compile(pattern_string, re.DOTALL | re.IGNORECASE)
+
+        new_inner_content = f"\n      {total_downloads:,}\n    "
         replacement_string = f"\\1{new_inner_content}\\3"
-        
+
         return pattern.sub(replacement_string, existing_content)
+
     # --- END: CORRECTED CODE ---
 
     content = get_updated_content(content, "COBBLEPASS_DOWNLOADS_PLACEHOLDER", cobblepass_total)
