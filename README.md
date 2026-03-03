@@ -12,7 +12,7 @@ I'm a **CS student** at the **University of Glasgow** and a passionate developer
 
 - 🎮 **Minecraft Side Mods**:  
 
-  - [**CobblePass**](https://github.com/turiddu25/CobblePass): A Battle Pass mod for Cobblemon.  
+  - [**CobblePass**](https://github.com/turiddu25/cobblepass-free): A Battle Pass mod for Cobblemon.  
 
     **Total Downloads**:  
 
