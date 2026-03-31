@@ -17,7 +17,7 @@ I'm a **CS student** at the **University of Glasgow** and a passionate developer
     **Total Downloads**:  
 
     <!-- COBBLEPASS_DOWNLOADS_PLACEHOLDER -->
-      36,424
+      36,490
     <!-- /COBBLEPASS_DOWNLOADS_PLACEHOLDER -->
 
   - [**SimpleDexRewards**](https://github.com/turiddu25/Cobblemon--Simple-Dex-Rewards): A Pokedex reward system for Cobblemon.  
@@ -25,7 +25,7 @@ I'm a **CS student** at the **University of Glasgow** and a passionate developer
     **Total Downloads**:  
 
     <!-- SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->
-      28,756
+      28,806
     <!-- /SIMPLEDEXREWARDS_DOWNLOADS_PLACEHOLDER -->
 
 
